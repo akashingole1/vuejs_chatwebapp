@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mt-4">
     <h2>Welcome to Vue.js Chat App</h2>
     <form class="detail-box my-5">
       <div class="form-group my-3">

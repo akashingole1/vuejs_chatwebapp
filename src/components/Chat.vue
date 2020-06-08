@@ -28,9 +28,17 @@
     </nav>
 
     <!-- Page Content  -->
-    <div id="content">
-      <h2>Welcome {{currentUserName}},</h2>
-      <h3>Let's connect the world</h3>
+    <div id="content" v-if="currentPeerUser===null">
+      <div class="my-4">
+        <img :src="photoURL" width="200px" class="br-50" />
+      </div>
+      <div>
+        <h2>Welcome {{currentUserName}},</h2>
+        <h3>Let's connect the world</h3>
+      </div>
+    </div>
+    <div v-else class="header-width">
+      <ChatBox v-bind:currentPeerUser="currentPeerUser" />
     </div>
   </div>
 </template>
@@ -38,7 +46,12 @@
 <script>
 /* eslint-disable */
 import firebase from "../services/firebase";
+import ChatBox from "./ChatBox";
+
 export default {
+  components: {
+    ChatBox
+  },
   app: "Chat",
   data() {
     return {
@@ -51,7 +64,8 @@ export default {
       currentUserMessages: [],
       searchUsers: [],
       notificationMessagesErase: [],
-      displayContacts: []
+      displayContacts: [],
+      photoURL: localStorage.getItem("photoURL")
     };
   },
   methods: {
@@ -167,6 +181,8 @@ export default {
         .doc(this.currentUserDocumentId)
         .get()
         .then(doc => {
+          console.log("doc data", doc.data());
+          console.log("messages", doc.data().messages);
           doc.data().messages.map(el => {
             this.currentUserMessages.push({
               notificationId: el.notificationId,
@@ -184,5 +200,16 @@ export default {
 <style scoped>
 .pointer {
   cursor: pointer;
+}
+.br-50 {
+  border-radius: 50%;
+}
+.header-width {
+  width: calc(100% - 275px);
+  min-height: 100vh;
+  transition: all 0.3s;
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 </style>
