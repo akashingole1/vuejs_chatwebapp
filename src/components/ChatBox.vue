@@ -8,9 +8,18 @@
         </div>
       </div>
     </header>
-    <div style="background: royalblue; flex: 1">
-      <h2 style="color: black">Welcome to Chatbox</h2>
-      <span>{{currentPeerUser}}</span>
+    <div style="background: #efe9e2; flex: 1; overflow-y: auto">
+      <h2 class="welcome">Welcome to Chatbox</h2>
+      <div class="text-outer">
+        <div
+          :class="item.idFrom === currentUserId ? 'textFrom' : 'textTo'"
+          class="text-inner"
+          v-for="item in listMessage"
+          :key="item.content.length"
+        >
+          <h6>{{item.content}}</h6>
+        </div>
+      </div>
     </div>
     <div v-show="showSticker">
       <img src="../assets/happy.jpeg" width="70px" v-on:click="sendMessage('happy', 2)" />
@@ -42,7 +51,9 @@
           />
           <input
             type="text"
-            style="width: 85%; border: 1px solid transparent; border-radius: 4px"
+            style="width: 85%; border: 1px solid transparent; border-radius: 4px;
+            padding: 5px 10px;
+            "
             class="mr-3"
             v-model="inputValue"
             v-on:keyup.enter="sendMessage(inputValue, 0)"
@@ -81,8 +92,17 @@ export default {
       currentPeerUserMessages: [],
       removeListener: null,
       currentPhotoFile: null,
-      listMessage: []
+      listMessage: [],
+      viewMessages: []
     };
+  },
+  watch: {
+    currentPeerUser: function(newVal, oldVal) {
+      console.log("prop changed", newVal.id, oldVal.id);
+      if (newVal !== oldVal) {
+        this.getListHistory();
+      }
+    }
   },
   methods: {
     sendMessage(content, type) {
@@ -113,24 +133,15 @@ export default {
         .then(() => {
           this.inputValue = "";
         });
-      this.currentPeerUserMessages.map(el => {
-        console.log("el", el);
-        if (el.notificationId != this.currentUserId) {
-          notificationMessages.push({
-            notificationId: el.notificationId,
-            number: el.number
-          });
-        }
-      });
-      firebase
-        .firestore()
-        .collection("users")
-        .doc(this.currentPeerUser.documentKey)
-        .update({
-          messages: notificationMessages
-        })
-        .then(data => {})
-        .catch(err => console.log("update error", err));
+      // firebase
+      //   .firestore()
+      //   .collection("users")
+      //   .doc(this.currentPeerUser.documentKey)
+      //   .update({
+      //     messages: notificationMessages
+      //   })
+      //   .then(data => {})
+      //   .catch(err => console.log("update error", err));
     },
     choosePhoto() {},
     openStickersList() {
@@ -142,50 +153,37 @@ export default {
       }
     },
     getListHistory() {
-      this.listMessage.length = 0;
-      if (
-        this.hashString(this.currentUserId) <
-        this.hashString(this.currentPeerUser.id)
-      ) {
-        this.groupChatId = `${this.currentUserId} + ${this.currentPeerUser.id}`;
-      } else {
-        this.groupChatId = `${this.currentPeerUser.id} + ${this.currentUserId}`;
-      }
-      (this.removeListener = firebase
+      console.log("call", this.currentPeerUser.id);
+      this.listMessage = [];
+      this.groupChatId = `${this.currentPeerUser.id} + ${this.currentUserId}`;
+      firebase
         .firestore()
         .collection("Messages")
         .doc(this.groupChatId)
         .collection(this.groupChatId)
         .onSnapshot(Snapshot => {
-          Snapshot.docChanges().forEach(change => {
-            if (change.type === "added") {
+          if (Snapshot.docChanges().length > 0) {
+            Snapshot.docChanges().forEach(change => {
               this.listMessage.push(change.doc.data());
-            }
-          });
-        })),
-        err => {
-          console.log("list history error", err);
-        };
-    },
-    hashString(str) {
-      let hash = 0;
-      for (let i = 0; i < str.length; i++) {
-        hash += Math.pow(str.charCodeAt(i) * 31, str.length - i);
-        hash = hash & hash; //convert to 32 bit integer
-      }
-      return hash;
+            });
+          } else {
+            this.groupChatId = `${this.currentUserId} + ${this.currentPeerUser.id}`;
+            this.removeListener = firebase
+              .firestore()
+              .collection("Messages")
+              .doc(this.groupChatId)
+              .collection(this.groupChatId)
+              .onSnapshot(Snapshot => {
+                Snapshot.docChanges().forEach(change => {
+                  console.log("change", change.doc.data());
+                  if (change.type === "added") {
+                    this.listMessage.push(change.doc.data());
+                  }
+                });
+              });
+          }
+        });
     }
-  },
-  created() {
-    firebase
-      .firestore()
-      .collection("users")
-      .doc(this.currentPeerUser.documentKey)
-      .get()
-      .then(docRef => {
-        console.log("res", docRef.data());
-        this.currentPeerUserMessages = docRef.data().messages;
-      });
   },
   mounted() {
     this.getListHistory();
@@ -197,6 +195,11 @@ export default {
 </script>
 
 <style scoped>
+.welcome {
+  color: #635a5a;
+  font-weight: 600;
+  margin: 10px 0px 32px;
+}
 .br-50 {
   border-radius: 50%;
 }
@@ -204,5 +207,25 @@ export default {
   float: left;
   margin-left: 10px;
   margin-top: 10px;
+}
+.text-outer {
+  display: flex;
+  flex-direction: column;
+  /* float: right; */
+}
+.text-inner {
+  padding: 10px 10px 2px;
+  border-radius: 0.5rem;
+  width: 20%;
+}
+.textFrom {
+  background: teal;
+  color: white;
+  margin: 0% 0% 20px 70%;
+}
+.textTo {
+  background: lightcoral;
+  color: black;
+  margin: 0% 0% 20px 5%;
 }
 </style>

@@ -1,28 +1,40 @@
 <template>
   <div class="wrapper">
     <!-- Sidebar  -->
-    <nav id="sidebar">
+    <nav style="color: white" id="sidebar">
       <div class="sidebar-header d-flex justify-content-around">
         <div class="pointer" v-on:click="onProfileClick">
           <h4>{{currentUserName}}</h4>
         </div>
         <button type="button" class="btn btn-primary" v-on:click="logout">Logout</button>
       </div>
+      <div style="height: 1px; border-bottom: 1px solid #00388b"></div>
       <ul class="list-unstyled components">
         <li
-          class="active pl-3 mb-3"
+          class="active mb-3"
           v-on:click="notificationErase(item)"
           v-for="item in searchUsers"
           :key="item.id"
           v-show="item.id != currentUserId"
         >
-          <div class="d-flex" style="cursor: pointer">
-            <img src="../assets/user.png" alt="user" height="40px" />
-            <div>
+          <div class="d-flex" style="cursor: pointer; padding-bottom: 15px; width: 100%">
+            <div style="width: 30%">
+              <img
+                :src="item.URL"
+                alt="user"
+                width="50px"
+                height="50px"
+                style="border-radius: 50%; background: white;"
+              />
+            </div>
+            <div
+              style="padding: 10px 0px 0px; width: 50%; display: flex; justify-content: space-between"
+            >
               <h6>{{item.name}}</h6>
-              <h6>New Messages</h6>
+              <h6>9:00</h6>
             </div>
           </div>
+          <div style="height: 1px; border-bottom: 1px solid #00388b"></div>
         </li>
       </ul>
     </nav>
@@ -34,7 +46,7 @@
       </div>
       <div>
         <h2>Welcome {{currentUserName}},</h2>
-        <h3>Let's connect the world</h3>
+        <h3>Let's spread love</h3>
       </div>
     </div>
     <div v-else class="header-width">
@@ -146,7 +158,6 @@ export default {
       this.renderUsersList();
     },
     notificationErase(item) {
-      console.log(item);
       this.displayNotification.forEach(el => {
         if (el.notificationId.length > 0) {
           if (el.notificationId != item.id) {
@@ -205,7 +216,7 @@ export default {
   border-radius: 50%;
 }
 .header-width {
-  width: calc(100% - 275px);
+  width: calc(100% - 350px);
   min-height: 100vh;
   transition: all 0.3s;
   position: absolute;

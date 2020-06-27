@@ -2,7 +2,7 @@
   <div class="w-100">
     <h2 class="fw-600">Welcome to Profile section</h2>
     <div class="profile">
-      <img class="br-06" :src="photoURL" width="80%" height="100%" />
+      <img class="br-06" :src="photoURL" width="100%" height="100%" />
       <label class="avatar">
         <font-awesome-icon icon="pencil-alt" />
         <input type="file" name="upload" class="w-0" @change="changeAvatar" />

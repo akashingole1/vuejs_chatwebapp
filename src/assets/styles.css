@@ -56,14 +56,14 @@ a:focus {
 }
 
 #sidebar {
-  width: 275px;
+  width: 350px;
   position: fixed;
   top: 0;
   left: 0;
   height: 100vh;
   z-index: 999;
-  background: #7386d5;
-  color: #fff;
+  background: royalblue;
+  color: black;
   transition: all 0.3s;
 }
 
@@ -73,7 +73,7 @@ a:focus {
 
 #sidebar .sidebar-header {
   padding: 20px;
-  background: #6d7fcc;
+  background: royalblue;
 }
 
 #sidebar ul.components {
@@ -148,7 +148,7 @@ a.article:hover {
 ----------------------------------------------------- */
 
 #content {
-  width: calc(100% - 250px);
+  width: calc(100% - 350px);
   padding: 40px;
   min-height: 100vh;
   transition: all 0.3s;
