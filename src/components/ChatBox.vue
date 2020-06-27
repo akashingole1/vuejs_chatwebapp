@@ -4,7 +4,7 @@
       <div style="height: 60px; background: lightgrey">
         <img :src="currentPeerUser.URL" width="40px" class="br-50 header-image" />
         <div class="header-image">
-          <h6 class="mt-2">{{currentPeerUser.name}}</h6>
+          <h6 class="mt-2" style="font-weight: 600">{{currentPeerUser.name}}</h6>
         </div>
       </div>
     </header>
