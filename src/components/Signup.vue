@@ -1,9 +1,9 @@
 <template>
   <div class="mt-4">
-    <h2>Welcome to Vue.js Chat App</h2>
+    <h2 style="color: dodgerblue; font-weight: 600">Welcome to Vue.js Chat App</h2>
     <form class="detail-box my-5">
       <div class="form-group my-3">
-        <h4>Signup to Chat</h4>
+        <h4 style="color: dodgerblue; font-weight: 600">Signup to Chat</h4>
         <input
           type="text"
           v-model="name"
@@ -23,9 +23,14 @@
           placeholder="Enter your password..."
         />
         <a href="/">
-          <h6 class="mb-3">Back to login</h6>
+          <h6 class="mb-3" style="font-weight: 600">Back to login</h6>
         </a>
-        <button type="button" v-on:click="signup" class="btn btn-primary">Signup</button>
+        <button
+          style="font-weight: 600"
+          type="button"
+          v-on:click="signup"
+          class="btn btn-primary"
+        >Signup</button>
       </div>
     </form>
   </div>

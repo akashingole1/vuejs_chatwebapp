@@ -1,9 +1,9 @@
 <template>
   <div class="mt-4">
-    <h2>Welcome to Vue.js Chat App</h2>
+    <h2 style="color: dodgerblue; font-weight: 600">Welcome to Vue.js Chat App</h2>
     <form class="detail-box my-5">
       <div class="form-group my-3">
-        <h4>Login to Chat</h4>
+        <h4 style="color: dodgerblue; font-weight: 600">Login to Chat</h4>
         <input
           type="text"
           v-model="email"
@@ -15,12 +15,18 @@
           v-model="password"
           class="form-control mb-4"
           placeholder="Enter your password..."
+          v-on:keyup.enter="login"
         />
         <a href="/signup">
-          <h6 class="mb-3">Create an account</h6>
+          <h6 class="mb-3" style="font-weight: 600">Create an account</h6>
         </a>
 
-        <button type="button" v-on:click="login" class="btn btn-primary">Login</button>
+        <button
+          type="button"
+          v-on:click="login"
+          class="btn btn-primary"
+          style="font-weight: 600"
+        >Login</button>
       </div>
     </form>
   </div>
@@ -29,13 +35,17 @@
 <script>
 /* eslint-disable */
 import firebase from "../services/firebase";
+import moment from "moment";
 
 export default {
   app: "Login",
   data() {
     return {
       email: "",
-      password: ""
+      password: "",
+      timestamp: moment()
+        .valueOf()
+        .toString()
     };
   },
   methods: {
@@ -47,7 +57,7 @@ export default {
           console.log("res", res);
           let user = res.user;
           if (user) {
-            //here we are looking if the user that logs in, if his uid matches
+            // here we are looking if the user that logs in, if his uid matches
             // with any id in the database
             // As while signing up we have stored user's uid as id in database
             await firebase
@@ -68,6 +78,12 @@ export default {
                   localStorage.setItem("FirebaseDocumentId", doc.id);
                 });
               });
+            localStorage.setItem(
+              "currentTime",
+              new Date(parseInt(this.timestamp)).getHours() +
+                ":" +
+                new Date(parseInt(this.timestamp)).getMinutes()
+            );
             this.$router.push("/chat");
           }
         })
@@ -95,6 +111,7 @@ input[type="text"],
 input[type="password"] {
   margin: 0 auto;
   width: 80%;
+  border: 1px solid lightgrey;
 }
 .detail-box {
   padding: 5px;

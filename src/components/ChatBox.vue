@@ -15,7 +15,7 @@
           :class="item.idFrom === currentUserId ? 'textFrom' : 'textTo'"
           class="text-inner"
           v-for="item in listMessage"
-          :key="item.content.length"
+          :key="item.id"
         >
           <h6>{{item.content}}</h6>
         </div>
@@ -117,6 +117,7 @@ export default {
         .valueOf()
         .toString();
       const itemMessage = {
+        id: timestamp,
         idFrom: this.currentUserId,
         idTo: this.currentPeerUser.id,
         timestamp: timestamp,
@@ -155,18 +156,22 @@ export default {
     getListHistory() {
       console.log("call", this.currentPeerUser.id);
       this.listMessage = [];
-      this.groupChatId = `${this.currentPeerUser.id} + ${this.currentUserId}`;
+
+      let groupChatId = `${this.currentPeerUser.id} + ${this.currentUserId}`;
       firebase
         .firestore()
         .collection("Messages")
-        .doc(this.groupChatId)
-        .collection(this.groupChatId)
+        .doc(groupChatId)
+        .collection(groupChatId)
         .onSnapshot(Snapshot => {
           if (Snapshot.docChanges().length > 0) {
+            console.log("call 2", groupChatId);
+            this.groupChatId = groupChatId;
             Snapshot.docChanges().forEach(change => {
               this.listMessage.push(change.doc.data());
             });
           } else {
+            console.log("call 1", this.groupChatId);
             this.groupChatId = `${this.currentUserId} + ${this.currentPeerUser.id}`;
             this.removeListener = firebase
               .firestore()
@@ -211,7 +216,6 @@ export default {
 .text-outer {
   display: flex;
   flex-direction: column;
-  /* float: right; */
 }
 .text-inner {
   padding: 10px 10px 2px;
