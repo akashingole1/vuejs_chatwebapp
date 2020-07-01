@@ -1,5 +1,5 @@
 <template>
-  <div class="w-100">
+  <div class="w-100 mt-3">
     <h2 class="fw-600">Welcome to Profile section</h2>
     <div class="profile">
       <img class="br-06" :src="photoURL" width="100%" height="100%" />
